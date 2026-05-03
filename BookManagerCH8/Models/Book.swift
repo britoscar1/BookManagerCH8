@@ -4,8 +4,10 @@
 //
 //  Created by Jorge Gabriel Marin Urias on 4/28/26.
 //
+import Foundation
 
-struct Book {
+struct Book: Identifiable {
+    var id: UUID = UUID()
     var title: String
     var author: String
     var coverImage: String

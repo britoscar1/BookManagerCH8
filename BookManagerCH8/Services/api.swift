@@ -1,15 +1,13 @@
 //
-//  ContentView.swift
+//  api.swift
 //  BookManagerCH8
 //
-//  Created by Jorge Gabriel Marin Urias on 4/28/26.
+//  Created by Oscar Artemio Brito Ortiz on 30/04/26.
 //
 
-import SwiftUI
 
-struct ContentView: View {
-    // mocking
-    var books = [
+func getBooks() -> [Book]{
+    return [
         Book(
             title: "Book 1 is a really long text to test this out",
             author: "Author 1",
@@ -24,32 +22,4 @@ struct ContentView: View {
         ),
         Book(title: "Book 3", author: "Author 3", coverImage: "lotr_king", summary: "Small summary"),
     ]
-    
-    var body: some View {
-        NavigationStack{
-            List(books, id: \.self.title){ book in
-                NavigationLink(destination: BookDetailView(book: book)){
-                    HStack{
-                        Image(book.coverImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 60, height: 80)
-                        VStack(alignment: .leading){
-                            Text(book.title)
-                                .font(.headline)
-                            Text(book.author)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Book Manager")
-        }
-    }
 }
-
-//#Preview {
-//    ContentView()
-////        .modelContainer(for: Item.self, inMemory: true)
-//}
