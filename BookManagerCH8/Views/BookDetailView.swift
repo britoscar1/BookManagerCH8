@@ -12,30 +12,29 @@ struct BookDetailView: View {
     @Binding var book: Book
     
     var body: some View {
-        VStack{
-            HStack{
+        VStack(spacing: 24) {
+            Text("Details for:")
+                .font(.headline)
+                .foregroundStyle(.secondary)
+            HStack(alignment: .top, spacing: 16) {
                 Image(book.coverImage)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 100, height: 150)
-                VStack(alignment: .leading, spacing: 10){
-                    Text(book.title)
-                        .font(.title)
-                    Text("by: \(book.author)")
-                }
+                    .frame(width: 90, height: 130)
+                Text(book.title)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.leading)
             }
             Text(book.summary)
-            Button("Edit Book"){
-                book.title = "New Book Here"
-            }
-            
-            Button("Change Cover"){
-                book.coverImage = "lotr_king"
-            }
-            
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.secondary)
+            Spacer()
         }
+        .padding()
+        .navigationTitle(book.title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
-
 
 
