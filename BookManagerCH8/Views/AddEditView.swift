@@ -7,32 +7,28 @@
 
 import SwiftUI
 
-//Screen or Component
 struct AddEditView: View {
     
     @Binding var book: Book
-    
     @Environment(\.dismiss) var dismiss
+    @State private var draft: Book
     
-    @State var title: String = ""
-    @State var author: String = ""
-    @State var summary: String = ""
-    
-    @State var selectedCover = "lotr_felowship"
+    init(book: Binding<Book>) {
+        _book = book
+        _draft = State(initialValue: book.wrappedValue)
+    }
     
     var body: some View {
-        NavigationStack{
-            Form{
-                Section(header: Text("Book Details")){
+        NavigationStack {
+            Form {
+                Section(header: Text("Book Details")) {
                     
-                    TextField("Title of the book", text: $book.title)
+                    TextField("Title of the book", text: $draft.title)
+                    TextField("Author", text: $draft.author)
+                    TextEditor(text: $draft.summary)
+                        .frame(height: 180)
                     
-                    TextField("Author", text: $book.author)
-                    
-                    TextEditor(text: $book.summary)
-                        .frame(height:180)
-                    
-                    Picker("Cover", selection: $book.coverImage){
+                    Picker("Cover", selection: $draft.coverImage) {
                         Text("The Fellowship of the ring")
                             .tag("lotr_fellowship")
                         Text("The Two Towers")
@@ -40,26 +36,28 @@ struct AddEditView: View {
                         Text("The return of the king")
                             .tag("lotr_king")
                     }
-                    
                 }
             }
-                .navigationTitle("Add Book")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar{
-                    ToolbarItem(placement: .confirmationAction){
-                        Button("Save"){
-                            
-                            
-                            dismiss()
-                        }
+            .navigationTitle("Add Book")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
                     }
                 }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        book = draft
+                        dismiss()
+                    }
+                    .disabled(draft.title.isEmpty || draft.author.isEmpty)
+                }
+            }
         }
     }
 }
 
-
-//Parent view - example
 #Preview {
     @State var book = Book(title: "", author: "", coverImage: "", summary: "")
     
