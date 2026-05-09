@@ -13,6 +13,7 @@ struct AddEditView: View {
     @Environment(\.dismiss) var dismiss
     @State private var draft: Book
     
+    
     init(book: Binding<Book>) {
         _book = book
         _draft = State(initialValue: book.wrappedValue)
@@ -37,8 +38,15 @@ struct AddEditView: View {
                             .tag("lotr_king")
                     }
                 }
+                Section(header: Text("Review")){
+                    
+                    StarRatingInputView(rating: $draft.rating)
+                    TextEditor(text: $draft.review)
+                        .frame(height: 100)
+                    
+                }
             }
-            .navigationTitle("Add Book")
+            .navigationTitle(book.title.isEmpty ? "Add Book" : "Edit Book")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -53,13 +61,16 @@ struct AddEditView: View {
                     }
                     .disabled(draft.title.isEmpty || draft.author.isEmpty)
                 }
+                ToolbarItem(placement: .primaryAction){
+                    FavoriteToggle(isFavorite: $draft.isFavorite, size: .subheadline)
+                }
             }
         }
     }
 }
 
 #Preview {
-    @State var book = Book(title: "", author: "", coverImage: "", summary: "")
+    @State var book = Book(title: "", author: "", coverImage: "", summary: "", rating: 0, review: "", isFavorite: false)
     
     NavigationStack {
         AddEditView(book: $book)

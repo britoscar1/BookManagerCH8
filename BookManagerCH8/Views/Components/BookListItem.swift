@@ -23,6 +23,7 @@ struct BookListItem: View {
                 Text("by \(book.author)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                StarRatingView(rating: book.rating)
             }
             
         }

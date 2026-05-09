@@ -11,33 +11,23 @@ struct ContentView: View {
     
     // Save new book
     @State private var books = getBooks()
-    @State private var showAddBook: Bool = false
     
     // Default book
-    @State private var newBook = Book(title: "", author: "", coverImage: "lotr_fellowship", summary: "")
+   
     
     var body: some View {
-        NavigationStack{
-            List($books){ book in
-                NavigationLink(destination: BookDetailView(book: book)){
-                    BookListItem(book: book.wrappedValue)
+        TabView{
+            BookListView(books: $books)
+                .tabItem {
+                    Label("Books", systemImage: "book.closed.fill")
                 }
-                
-            }
-            .navigationTitle("Book Manager")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button("Add View"){
-                showAddBook.toggle()
-            })
-            .sheet(isPresented: $showAddBook){
-                if(!newBook.title.isEmpty){
-                    books.append(newBook)
+            FavoritesView(books: $books)
+                .tabItem {
+                    Label("Favorites", systemImage: "heart.fill")
                 }
-                newBook = Book(title: "", author: "", coverImage: "lotr_fellowship", summary: "")
-            } content: {
-                AddEditView(book: $newBook)
-            }
+
         }
+        
     }
 }
 

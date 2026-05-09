@@ -27,43 +27,46 @@ struct BookDetailView: View {
                     .cornerRadius(6)
                 
                 VStack(alignment: .leading, spacing: 10){
+                    Spacer()
                     Text(book.title)
                         .font(.title)
                         .fontWeight(.bold)
+                    
                         
-                    Text("by: \(book.author)")
+                    Text("by \(book.author)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     
+                    StarRatingView(rating: book.rating)
+                    Spacer()
+                    HStack{
+                        Spacer()
+                        FavoriteToggle(isFavorite: $book.isFavorite)
+                    }
+                    
                 }
+                .frame(maxWidth: .infinity, maxHeight: 150)
                 Spacer()
                 
             }
             VStack(alignment: .leading, spacing: 6){
-                Text("Summary")
-                    .font(.headline)
-                    .fontWeight(.semibold)
                 
-                Text(book.summary)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(nil)
+                BookDetailCardView(title: "Summary", text:book.summary)
+                
+                
+                BookDetailCardView(title: "Review", text: book.review)
+                
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            Button(action: { showEditSheet = true }){
-                Text("Edit Book")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: 300)
-                    .padding(12)
-                    .background(Color.blue)
-                    .cornerRadius(8)
-            }
+            
         }
+        .navigationTitle(book.title)
         .frame(maxHeight: .infinity, alignment: .top)
         .padding()
+        .navigationBarItems(trailing: Button("Edit"){
+            showEditSheet.toggle()
+        })
         .sheet(isPresented: $showEditSheet){
             AddEditView(book: $book)
             
@@ -76,7 +79,10 @@ struct BookDetailView: View {
         title: "The return of the king",
         author: "J.R.R Tolkien",
         coverImage: "lotr_king",
-        summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        rating: 0,
+        review: "",
+        isFavorite: false
     )
     
     BookDetailView(book: $book)
