@@ -1,9 +1,4 @@
-//
-//  Book.swift
-//  BookManagerCH8
-//
-//  Created by Jorge Gabriel Marin Urias on 4/28/26.
-//
+
 import Foundation
 
 struct Book: Identifiable {
@@ -19,4 +14,10 @@ struct Book: Identifiable {
     // 106
     var isFavorite: Bool
     
+    //106 - 2
+    
+    //genre
+    var genre: Genre = .unknown
+    //readingStatus
+    var readingStatus: ReadingStatus = .planToRead
 }

@@ -6,21 +6,24 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct BookListView: View {
     
     
-    @Binding var books: [Book]
+    @Query var books: [PersistentBook]
     
     @State private var showAddBook: Bool = false
 
-    @State private var newBook = Book(title: "", author: "", coverImage: "lotr_fellowship", summary: "", rating: 0, review: "", isFavorite: false)
+//    @State private var newBook = Book(title: "", author: "", coverImage: "lotr_fellowship", summary: "", rating: 0, review: "", isFavorite: false, genre: .unknown)
+    
+    @AppStorage(SETTINGS_SHOW_RATING) private var toggleRating: Bool = SETTINGS_SHOW_RATING_VALUE
     
     var body: some View {
         NavigationStack{
-            List($books){ book in
+            List(books, id:\.self.id){ book in
                 NavigationLink(destination: BookDetailView(book: book)){
-                    BookListItem(book: book.wrappedValue)
+                    BookListItem(book: book, showRating: toggleRating)
                 }
                 
             }
@@ -30,12 +33,12 @@ struct BookListView: View {
                 showAddBook.toggle()
             })
             .sheet(isPresented: $showAddBook){
-                if(!newBook.title.isEmpty){
-                    books.append(newBook)
-                }
-                newBook = Book(title: "", author: "", coverImage: "lotr_fellowship", summary: "", rating: 0, review:"", isFavorite: false)
+//                if(!newBook.title.isEmpty){
+//                    books.append(newBook)
+//                }
+//                newBook = Book(title: "", author: "", coverImage: "lotr_fellowship", summary: "", rating: 0, review:"", isFavorite: false)
             } content: {
-                AddEditView(book: $newBook)
+                AddEditView()
             }
         }
     }

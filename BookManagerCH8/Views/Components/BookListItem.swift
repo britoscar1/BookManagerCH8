@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct BookListItem: View {
-    var book: Book
+    
+    
+    var book: PersistentBook
+    
+    var showRating: Bool
     
     var body: some View {
         HStack{
-            Image(book.coverImage)
+            Image(uiImage: book.cover)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 60, height: 80)
@@ -23,7 +27,9 @@ struct BookListItem: View {
                 Text("by \(book.author)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                StarRatingView(rating: book.rating)
+                if showRating{
+                    StarRatingView(rating: book.rating)
+                }
             }
             
         }

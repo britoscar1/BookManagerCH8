@@ -6,24 +6,49 @@
 //
 
 import SwiftUI
+import SwiftData
+
 
 struct FavoritesView: View{
     
-    @Binding var books: [Book]
+    @Query var books: [PersistentBook]
+    @State private var showFilters: Bool = false
+    @State var selectedGenre: Genre?
+    @State var selectedStatus: ReadingStatus?
     
-    let gridLayout = [GridItem(.flexible()), GridItem(.flexible())]
+    @AppStorage(SETTINGS_GRID_COLUMNS) private var gridColumns: Int = SETTINGS_GRID_COLUMNS_VALUE
+
     
+    var gridLayout: [GridItem] {
+        Array(repeating: GridItem(.flexible()), count:gridColumns)
+    }
     //computed property
     
-    private var favoriteBooks: [Book]{
-        books.filter({$0.isFavorite})
+    private var favoriteBooks: [PersistentBook]{
+        filterFavoriteBooks(books: books, genre: selectedGenre, readingStatus: selectedStatus)
     }
     
     var body: some View{
-        LazyVGrid(columns: gridLayout){
-            ForEach(favoriteBooks){ book in
-                GridCard(book: book)
+        NavigationStack{
+            ScrollView{
+                LazyVGrid(columns: gridLayout){
+                    ForEach(favoriteBooks){ book in
+                        GridCard(book: book)
+                    }
+                }
+                .padding(.all, CGFloat(8/2))
             }
+            .navigationTitle("Favorites")
+            .navigationBarItems(
+                trailing:
+                    Button("Filter"){
+                        self.showFilters.toggle()
+                    }
+                
+            )
         }
+        .sheet(isPresented: $showFilters, content: {
+            FilterBooksView(selectedGenre: $selectedGenre, selectedStatus: $selectedStatus)
+        })
     }
 }

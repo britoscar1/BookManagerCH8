@@ -1,17 +1,20 @@
-//
-//  BookDetailView.swift
-//  BookManagerCH8
-//
-//  Created by Jorge Gabriel Marin Urias on 4/28/26.
-//
 
 import SwiftUI
+import SwiftData
 
 struct BookDetailView: View {
 
-    @Binding var book: Book
+    var book: PersistentBook
+    
+    @State private var isFavorite: Bool
     @State private var showEditSheet = false
+    @Environment(\.modelContext) private var modelContext
 
+    
+    init(book: PersistentBook){
+        self.book = book
+        self.isFavorite = book.isFavorite
+    }
     var body: some View {
         VStack(spacing: 16){
             Text("Details for:")
@@ -20,14 +23,13 @@ struct BookDetailView: View {
                 .padding(.bottom, 10)
             
             HStack{
-                Image(book.coverImage)
+                Image(uiImage: book.cover)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 150)
                     .cornerRadius(6)
                 
                 VStack(alignment: .leading, spacing: 10){
-                    Spacer()
                     Text(book.title)
                         .font(.title)
                         .fontWeight(.bold)
@@ -38,10 +40,19 @@ struct BookDetailView: View {
                         .foregroundStyle(.secondary)
                     
                     StarRatingView(rating: book.rating)
-                    Spacer()
+                    HStack{
+                        ColoredCapsule(text: book.genre.rawValue, color: .accentColor)
+                        ColoredCapsule(text: book.readingStatus.rawValue, color: .cyan)
+                        
+                    }
+                    
                     HStack{
                         Spacer()
-                        FavoriteToggle(isFavorite: $book.isFavorite)
+                        FavoriteToggle(isFavorite: $isFavorite)
+                            .onChange(of: isFavorite){ value in
+                                book.isFavorite = value
+                                try? modelContext.save()
+                            }
                     }
                     
                 }
@@ -68,22 +79,23 @@ struct BookDetailView: View {
             showEditSheet.toggle()
         })
         .sheet(isPresented: $showEditSheet){
-            AddEditView(book: $book)
+            AddEditView()
             
         }
     }
 }
 
-#Preview {
-    @State var book = Book(
-        title: "The return of the king",
-        author: "J.R.R Tolkien",
-        coverImage: "lotr_king",
-        summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        rating: 0,
-        review: "",
-        isFavorite: false
-    )
-    
-    BookDetailView(book: $book)
-}
+//#Preview {
+//    @State var book = Book(
+//        title: "The return of the king",
+//        author: "J.R.R Tolkien",
+//        coverImage: "lotr_king",
+//        summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+//        rating: 0,
+//        review: "",
+//        isFavorite: false
+//        
+//    )
+//    
+//    BookDetailView()
+//}
